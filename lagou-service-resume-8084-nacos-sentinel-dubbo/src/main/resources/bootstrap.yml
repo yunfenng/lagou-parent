@@ -1,0 +1,44 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: lagou-service-resume
+  main:
+    # Spring Boot 2.1需要设定
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lagou?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+  jpa:
+    database: MySQL
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #避免将驼峰命名转换为下划线命名
+  # 注册到Nacos服务中心
+  cloud:
+    nacos:
+      discovery:
+        # 集群中各个节点都配置在这里（域名-VIP-绑定映射到各个实例的地址信息）
+        server-addr: 127.0.0.1:8848, 127.0.0.1:8858, 127.0.0.1:8868
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+dubbo:
+  scan:
+    # dubbo 服务扫描基准包
+    base-packages: com.lagou.edu.service.impl
+  protocol:
+    # dubbo 协议
+    name: dubbo
+    # dubbo 协议端⼝（ -1 表示⾃增端⼝，从 20880 开始）
+    port: -1
+  registry:
+    # 挂载到 Spring Cloud 的注册中⼼
+    address: spring-cloud://localhost
+

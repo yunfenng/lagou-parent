@@ -5,11 +5,13 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/lagou-service-dubbo-api/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/lagou-cloud-stream-producer/pom.xml" />
+        <option value="$PROJECT_DIR$/lagou-dubbo-api/pom.xml" />
       </set>
     </option>
   </component>
