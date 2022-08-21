@@ -1,0 +1,22 @@
+# Project exclude paths
+/lagou-cloud-configserver-9006/target/
+/lagou-cloud-eureka-server-8761/target/
+/lagou-cloud-eureka-server-8762/target/
+/lagou-cloud-gateway-9002/target/
+/lagou-cloud-hystrix-dashboard-9000/target/
+/lagou-cloud-hystrix-turbine-9001/target/
+/lagou-cloud-oauth-server-9999/target/
+/lagou-cloud-stream-consumer-9091/target/
+/lagou-cloud-stream-consumer-9092/target/
+/lagou-cloud-stream-producer-9090/target/
+/lagou-cloud-zipkin-server-9411/target/
+/lagou-service-autodeliver-8090/target/
+/lagou-service-autodeliver-8091/target/
+/lagou-service-autodeliver-8096/target/
+/lagou-service-autodeliver-8097-nacos/target/
+/lagou-service-autodeliver-8098-sentinel/target/
+/lagou-service-common/target/
+/lagou-service-resume-8080/target/
+/lagou-service-resume-8081/target/
+/lagou-service-resume-8082-nacos/target/
+/lagou-service-resume-8083-nacos/target/

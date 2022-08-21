@@ -1,0 +1,29 @@
+server:
+  port: 9999
+Spring:
+  application:
+    name: lagou-cloud-oauth-server
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/oauth2?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    druid:
+      initialSize: 10
+      minIdle: 10
+      maxActive: 30
+      maxWait: 50000
+
+# 注册到Eureka服务中心
+eureka:
+  client:
+    service-url:
+      # 注册到集群，就把多个Eureka Server地址使用逗号连接即可；注册到单实例(非集群模式)，写一个就可以
+      defaultZone: http://LagouCloudEurekaServerA:8761/eureka,http://LagouCloudEurekaServerB:8762/eureka
+    # 每隔多久拉取⼀次服务列表
+    registry-fetch-interval-seconds: 30
+  instance:
+    prefer-ip-address: true # 服务器实例中显示ip，而不是显示主机名(兼容老版本Eureka)
+    # 实例名称: 192.168.1.108:lagou-service-resume:8080:1.0-SNAPSHOT
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+

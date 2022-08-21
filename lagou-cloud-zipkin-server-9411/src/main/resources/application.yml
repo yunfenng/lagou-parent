@@ -1,0 +1,22 @@
+server:
+  port: 9411
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false # 关闭⾃动检测请求
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/zipkin?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    druid:
+      initialSize: 10
+      minIdle: 10
+      maxActive: 30
+      maxWait: 50000
+# 指定zipkin持久化介质为mysql
+zipkin:
+  storage:
+    type: mysql

@@ -1,0 +1,68 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: lagou-service-resume
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lagou?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+  jpa:
+    database: MySQL
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #避免将驼峰命名转换为下划线命名
+  zipkin:
+    base-url: http://127.0.0.1:9411 # zipkin的请求地址
+    sender:
+      # web 客户端将踪迹⽇志数据通过⽹络请求的⽅式传送到服务端，另外还有配置
+      # kafka/rabbit 客户端将踪迹⽇志数据传递到mq进⾏中转
+      type: web
+  sleuth:
+    sampler:
+      # 采样率 1 代表100%全部采集 ，默认0.1 代表10% 的请求踪迹数据会被采集
+      # ⽣产环境下，请求量⾮常⼤，没有必要所有请求的踪迹数据都采集分析，对于⽹络包括server端压⼒都是⽐较⼤的，
+      # 可以配置采样率采集⼀定⽐例的请求的踪迹数据进⾏分析即可
+      probability: 1
+#  cloud:
+#    # config 客户端配置
+#    config:
+#      name: lagou-service-resume # 配置问价名称
+#      profile: dev # 后缀名称
+#      label: master # 分支名称
+#      uri: http://localhost:9006 # ConfigServer配置中⼼地址
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+# 注册到Eureka服务中心
+eureka:
+  client:
+    service-url:
+      # 注册到集群，就把多个Eureka Server地址使用逗号连接即可；注册到单实例(非集群模式)，写一个就可以
+      defaultZone: http://LagouCloudEurekaServerA:8761/eureka,http://LagouCloudEurekaServerB:8762/eureka
+  instance:
+    prefer-ip-address: true # 服务器实例中显示ip，而不是显示主机名(兼容老版本Eureka)
+    # 实例名称: 192.168.1.108:lagou-service-resume:8080:1.0-SNAPSHOT
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+    # 自定义Eureka元数据
+    metadata-map:
+      cluster: cl1
+      region: rn1
+    # 租约续约间隔时间，默认30秒
+    lease-renewal-interval-in-seconds: 30
+    # 租约到期，服务时效时间，默认值90秒,服务超过90秒没有发⽣⼼跳，EurekaServer会将服务从列表移除
+    lease-expiration-duration-in-seconds: 90
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#分布式链路追踪
+logging:
+  level:
+    org.springframework.web.servlet.DispatcherServlet: debug
+    org.springframework.cloud.sleuth: debug

@@ -1,0 +1,62 @@
+server:
+  port: 8098
+spring:
+  application:
+    name: lagou-service-autodeliver
+  cloud:
+    nacos:
+      discovery:
+        # 集群中各个节点都配置在这里（域名-VIP-绑定映射到各个实例的地址信息）
+        server-addr: 127.0.0.1:8848, 127.0.0.1:8858, 127.0.0.1:8868
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080 # sentinel dashboard/console 地址
+        port: 8719 # sentinel 会在该端口启动 http server，那么这样的话，控制台定义的一些限流等规则才能发动传递过来，
+                   # 如果8719端口被占用，那么会依次+1
+      # Sentinel Nacos数据源配置，Nacos中的规则会⾃动同步到sentinel控制台的流控规则中
+      datasource:
+        # 此处的flow为⾃定义数据源名
+        flow: # 流控规则
+          nacos:
+            server-addr: ${spring.cloud.nacos.discovery.server-addr}
+            data-id: ${spring.application.name}-flow-rules
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule-type: flow # 类型来⾃RuleType类
+        # 自定义的降级规则数据源名称
+        degrade:
+          nacos:
+            server-addr: ${spring.cloud.nacos.discovery.server-addr}
+            data-id: ${spring.application.name}-degrade-rules
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule-type: degrade # 类型来⾃RuleType类
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  # 暴露健康检查接口细节
+  endpoint:
+    health:
+      show-details: always
+#针对的被调⽤⽅微服务名称,不加就是全局⽣效
+lagou-service-resume:
+  ribbon:
+    #请求连接超时时间
+    ConnectTimeout: 2000
+    #请求处理超时时间
+    ReadTimeout: 13000  # ####### Feign的超时时⻓设置
+    #对所有操作都进⾏重试
+    OkToRetryOnAllOperations: true
+    ####根据如上配置，当访问到故障请求的时候，它会再尝试访问⼀次当前实例（次数由MaxAutoRetries配置），
+    ####如果不⾏，就换⼀个实例进⾏访问，如果还不⾏，再换⼀次实例访问（更换次数由MaxAutoRetriesNextServer配置），
+    ####如果依然不⾏，返回失败信息。
+    MaxAutoRetries: 0 #对当前选中实例重试次数，不包括第⼀次调⽤
+    MaxAutoRetriesNextServer: 0 #切换实例的重试次数
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule #负载策略调整
+logging:
+  level:
+    # Feign⽇志只会对⽇志级别为debug的做出响应
+    com.lagou.edu.service.ResumeServiceFeignClient: debug
